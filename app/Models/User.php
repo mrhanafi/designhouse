@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmail as VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+
+class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SpatialTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +25,15 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'tagline',
+        'about',
+        'username',
+        'formatted_address',
+        'available_to_hire',
+    ];
+
+    protected $spatialFields = [
+        'location',
     ];
 
     /**
@@ -42,6 +54,11 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail);
+    }
 
     public function getJWTIdentifier()
     {
