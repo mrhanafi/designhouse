@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Http\Request;
@@ -32,6 +33,10 @@ Route::group(['middleware' => ['guest:api']], function(){
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('verification/verify/{user}', [VerifyEmailController::class, 'verify'])->name('verification.verify');
     Route::post('verification/resend', [VerifyEmailController::class, 'resend'])->name('verification.resend');
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
     // Route::post('verification/verify', [VerifyEmailController::class, '__invoke'])->middleware(['signed', 'throttle:6,1'])
     // ->name('verification.verify');
     // Route::post('verification/resend', function (Request $request) {
